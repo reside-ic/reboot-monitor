@@ -16,6 +16,9 @@
 // simultaneously. Probably Apache ensures this anyway, but
 // still...
 
+// Only allow incoming messages from ips starting with...
+$ip_filter = "129.31.";
+
 function check_lockfile_exists($file) {
   if (!file_exists($file.".lock")) {
     $f = fopen($file.".lock", "w");
@@ -51,9 +54,19 @@ function get_arguments() {
   return array($_GET['machine'], intval($_GET['status']), $file);
 }
 
+function check_ip() {
+  global $ip_filter;
+  $ip = $_SERVER['REMOTE_ADDR'];
+  if (substr($ip, 0, strlen($ip_filter)) != $ip_filter) {
+    header('Location: https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+    exit();
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
+check_ip();
 list ($arg_machine, $arg_status, $file) = get_arguments();
 
 check_lockfile_exists($file);

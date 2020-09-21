@@ -10,7 +10,7 @@ $team_webhook = "INSERT WEBHOOK HERE";
 // tests, $file could be changed to "test", to avoid interfering with existing
 // data.
 
-$file = "data";
+$file = "../data";
 
 // Check we have a lock file available to ensure exclusive access.
 
