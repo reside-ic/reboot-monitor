@@ -3,14 +3,13 @@
 // This script sends a report to a teams webhook, if there are any machines 
 // that reported they needed a reboot. Set the web hook below.
 
-$team_webhook = "INSERT WEBHOOK HERE";
-
+$team_webhook = "INSERT_WEBHOOK_ADDRESS_HERE";
 
 // Further down, all files will be prefixed with $file. If we write formal 
 // tests, $file could be changed to "test", to avoid interfering with existing
 // data.
 
-$file = "../data";
+$file = "data";
 
 // Check we have a lock file available to ensure exclusive access.
 
@@ -55,7 +54,10 @@ if (flock($fl, LOCK_EX)) {
       $text = $text.$machine." has needed a reboot since yesterday.   \n";
       $nothing_to_do = false;
     } else if ($status > 1) {
-      $text = $text.$machine." has needed a reboot for **".$status." days!**   \n";
+      $extra = "";
+      if ($status > 400) $extra = "&#x1F631;";
+      else if ($status > 100) $extra = "&#x1F62C;";
+      $text = $text.$machine." has needed a reboot for **".$status." days!** ".$extra."   \n";
       $nothing_to_do = false;
     }
     $str = fgets($fin);                // Next line in CSV (returns FALSE on EOF)
@@ -93,4 +95,3 @@ if (flock($fl, LOCK_EX)) {
   curl_exec($c);
   curl_close($c);
 }
-?>
