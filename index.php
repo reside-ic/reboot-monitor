@@ -51,7 +51,7 @@ function get_arguments() {
   // Attempt to get the IP of client from PHP, unless we override
   // it for testing.
 
-  $ip = isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:"";
+  $ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:"";
   if (($testing) && (isset($_GET['ip']))) $ip = $_GET['ip'];
  
   return array($_GET['machine'], intval($_GET['status']), 
