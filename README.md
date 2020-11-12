@@ -1,9 +1,9 @@
 # reboot-monitor
 
-A very simple bit of PHP which machines can regularly call with:-
+A very simple flask app which machines can regularly call with:-
 
 ```
-https://server/monitor/?machine=Machine_Name&Status=1
+https://monitor/?machine=Machine_Name&status=1
 ```
 
 where status 0 means the machine does not need a reboot, and any other status means that it does.
@@ -15,11 +15,10 @@ to a teams channel. The report might say:-
 ```
 Reboot Status
 
-bill.company.com does not need rebooting.
+bill.company.com does not need rebooting, but did not report today.
 ben.company.com has needed a reboot since yesterday.
 weed.company.com has needed a reboot for 31 days!
 ```
 
-There is also a brief `test.php` script, that can be run on the commandline with `php test.php` 
-from the `secret` folder. Note the `.htaccess` file, which denies any external access to the data
-and report script.
+This is deployed as a flask app on `monitor.dide.ic.ac.uk` in the department, 
+using Xampp / Apache for Windows with mod_wsgi compiled in.
