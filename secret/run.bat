@@ -1,4 +1,6 @@
 @echo off
+
+set path=%path%;c:\Python\Python38-32
 c:
-cd \xampp\htdocs\mrcdata\monitor\secret
-c:\xampp\php\php.exe report.php
+cd <\path\to\monitor\secret>
+c:\Python\Python38-32\python.exe report.py
