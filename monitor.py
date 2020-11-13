@@ -11,7 +11,7 @@ app = Flask(__name__)
 ############################################################
 
 def ensure_exists(fname, line):
-    if (not Path(fname).exists()):
+    if not Path(fname).exists():
         file = open(fname, "w")
         file.write(line + "\n")
         file.close()
@@ -43,18 +43,18 @@ def check_greylist(grey_list, given_machine, given_ip):
             elif line_count > 0:
                 grey_machine = row[0]
                 grey_ip = row[1]
-                if ((grey_machine == given_machine) and (grey_ip == given_ip)):
+                if grey_machine == given_machine and grey_ip == given_ip:
                     csvfile.close()
                     new_grey_list.close()
                     os.remove(new_grey_list_file)
                     return
-                elif ((grey_machine == given_machine) or (grey_ip == given_ip)):
+                elif grey_machine == given_machine or grey_ip == given_ip:
                     new_grey_list.write(given_machine + "," + given_ip + "\n")
                     overwritten_entry = True
                 else:
                     new_grey_list.write(row[0] + "," + row[1] + "\n")
 
-    if (not overwritten_entry):
+    if not overwritten_entry:
         new_grey_list.write(given_machine + "," + given_ip + "\n")
     new_grey_list.close()
     os.remove(grey_list)
@@ -75,7 +75,7 @@ def check_whitelist(white_list, grey_list, given_machine, given_ip):
             if line_count > 0:
                 white_machine = row[0]
                 white_ip = row[1]
-                if ((white_machine == given_machine) and (white_ip == given_ip)):
+                if white_machine == given_machine and white_ip == given_ip:
                     csvfile.close()
                     return True
 
@@ -102,13 +102,13 @@ def hello():
     arg_hostname = request.args.get("machine", "")
     arg_status = request.args.get("status", "")
 
-    if ((arg_hostname == "") and (arg_status == "")):
+    if arg_hostname == "" and arg_status == "":
         return educate_user()
 
-    if ((arg_status != "0") and (arg_status != "1")):
+    if arg_status != "0" and arg_status != "1":
         return educate_user()
 
-    arg_test = (request.args.get("test", 0) != 0)
+    arg_test = request.args.get("test", 0) != 0
     arg_status = int(arg_status)
 
     data_file = ("secret/test" if arg_test else "secret/data") + ".csv"
@@ -117,7 +117,7 @@ def hello():
     grey_file = ("secret/testgrey" if arg_test else "secret/greylist") + ".csv"
 
     test_ip = request.args.get("ip", "")
-    if ((arg_test) and (test_ip != "")):
+    if arg_test and test_ip != "":
         host_ip = test_ip
     else:
         host_ip = request.remote_addr
@@ -140,7 +140,7 @@ def hello():
         # If machine is in the white-list, but different ip #
         #####################################################
 
-        if (not check_whitelist(white_file, grey_file, arg_hostname, host_ip)):
+        if not check_whitelist(white_file, grey_file, arg_hostname, host_ip):
             return educate_user()
             sys.exit()
 
@@ -158,20 +158,20 @@ def hello():
             for row in reader:
                 line_count += 1
 
-                if (line_count == 0):
+                if line_count == 0:
                     new_data.write(row[0] + "," + row[1] + "," + row[2] + "\n")
 
                 else:
                     data_machine = row[0]
                     data_status = int(row[1])
-                    if (data_machine == arg_hostname):
+                    if data_machine == arg_hostname:
                         found_machine = True
                         new_status = str((1 + data_status) * arg_status)
                         new_data.write(data_machine + "," + new_status + "," + the_date + "\n")
                     else:
                         new_data.write(row[0] + "," + row[1] + "," + row[2] + "\n")
 
-        if (not found_machine):
+        if not found_machine:
             new_data.write(arg_hostname + "," + str(arg_status) + "," + the_date + "\n")
 
         new_data.close()

@@ -21,7 +21,7 @@ os.chdir("C:/path/to/monitor/secret")
 ############################################################
 
 def ensure_exists(fname, line):
-    if (not Path(fname).exists()):
+    if not Path(fname).exists():
         file = open(fname, "w")
         file.write(line + "\n")
         file.close()
@@ -31,9 +31,9 @@ def ensure_exists(fname, line):
 ############################################################
 
 def emotional_payload(status):
-    if (status > 400):
+    if status > 400:
         return "&#x1F631;"
-    elif (status > 100):
+    elif status > 100:
         return "&#x1F62C;"
     else:
         return ""
@@ -54,20 +54,20 @@ def main():
             line_count = -1
             for row in reader:
                 line_count += 1
-                if (line_count > 0):
+                if line_count > 0:
                     machine = row[0]
                     status = int(row[1])
                     last_date = row[2]
                     date_info = ""
-                    if (last_date != the_date):
+                    if last_date != the_date:
                         date_info = ", but did not report today"
-                    if (status == 0):
+                    if status == 0:
                         text = text + machine + " does not need rebooting" + date_info + ".   \n"
-                    elif (status == 1):
+                    elif status == 1:
                         text = text + machine + " has needed a reboot since yesterday" + date_info + ".   \n"
-                    elif (status > 1):
+                    elif status > 1:
                          extra = emotional_payload(status)
-                         if (last_date != the_date):
+                         if last_date != the_date:
                              date_info = "It also did not report today."
                          text = text + machine + " has need a reboot for **"
                          text = text + str(status) + " days!** " + extra + " " + date_info + "   \n"
