@@ -9,7 +9,9 @@ import ssl, socket
 # This script sends a report to a teams webhook, if there are any machines
 # that reported they needed a reboot. Set the web hook below.
 
-team_webhook = "<INSERT TEAM WEBHOOK HERE>"
+team_webhook = "https://imperiallondon.webhook.office.com/webhookb2/" \
+    "ba231111-1572-42ae-981e-c8bc7aa681ef@2b897507-ee8c-4575-830b-4f8267c3d307/IncomingWebhook/" \
+    "98b79cbcaefa49ef88b5d0e10cf61d16/7412aca5-7c7c-4f45-9d0e-97c9862e5945"
 
 # Further down, all files will be prefixed with $file. If we write formal
 # tests, $file could be changed to "test", to avoid interfering with existing
@@ -17,8 +19,6 @@ team_webhook = "<INSERT TEAM WEBHOOK HERE>"
 
 file = "data"
 cert = "certlist"
-
-# Bit hacky, but this is the path for the server on mrcdata.
 
 os.chdir("C:/xampp/FlaskApps/monitor/secret")
 
@@ -66,6 +66,29 @@ def emotional_payload(status):
     else:
         return ""
 
+############################################################
+# Messages about how long reboot had been needed           #
+############################################################
+
+def machine_status(machine, status, the_date, last_date):
+    date_info = ""
+    if (last_date != the_date):
+        date_info = ", but did not report today"
+    if (status == 0):
+        return (machine + " does not need rebooting" + date_info + ".   \n")
+    if (status == 1):
+        return (machine + " has needed a reboot since yesterday" + date_info + ".   \n")
+    extra = emotional_payload(status)
+    if (last_date != the_date):
+        date_info = "It also did not report today."
+    text = machine + " has needed a reboot for **"
+    text = text + str(status) + " days!** " + extra + " " + date_info + "   \n"
+    return(text)
+
+############################################################
+# Do the work                                              #
+############################################################
+
 def main():
     data_file = file + ".csv"
     data_lock_file = file + "lock"
@@ -84,23 +107,8 @@ def main():
             for row in reader:
                 line_count += 1
                 if (line_count > 0):
-                    machine = row[0]
-                    status = int(row[1])
-                    last_date = row[2]
-                    date_info = ""
-                    if (last_date != the_date):
-                        date_info = ", but did not report today"
-                    if (status == 0):
-                        text = text + machine + " does not need rebooting" + date_info + ".   \n"
-                    elif (status == 1):
-                        text = text + machine + " has needed a reboot since yesterday" + date_info + ".   \n"
-                    elif (status > 1):
-                         extra = emotional_payload(status)
-                         if (last_date != the_date):
-                             date_info = "It also did not report today."
-                         text = text + machine + " has needed a reboot for **"
-                         text = text + str(status) + " days!** " + extra + " " + date_info + "   \n"
-        
+                    text = text + machine_status(row[0], int(row[1]), the_date, row[2]) 
+
         text = text + "   \n\n"
         
         dt_now = datetime.now()
