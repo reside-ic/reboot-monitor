@@ -9,9 +9,7 @@ import ssl, socket
 # This script sends a report to a teams webhook, if there are any machines
 # that reported they needed a reboot. Set the web hook below.
 
-team_webhook = "https://imperiallondon.webhook.office.com/webhookb2/" \
-    "ba231111-1572-42ae-981e-c8bc7aa681ef@2b897507-ee8c-4575-830b-4f8267c3d307/IncomingWebhook/" \
-    "98b79cbcaefa49ef88b5d0e10cf61d16/7412aca5-7c7c-4f45-9d0e-97c9862e5945"
+team_webhook = "<INSERT WEBHOOK URL HERE>"
 
 # Further down, all files will be prefixed with $file. If we write formal
 # tests, $file could be changed to "test", to avoid interfering with existing
